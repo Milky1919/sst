@@ -22,14 +22,14 @@ RUN sed -i 's/faster-whisper==0\.10\.1/faster-whisper>=1.0.0/' requirements.txt 
 RUN pip install --no-cache-dir uv
 
 # uv を使って超高速かつ確実に依存関係を解決して一括インストール (--system でコンテナのシステムPythonに直接入れる)
+# soxr: transformers>=5.0 の audio_utils が import するため明示追加
 RUN uv pip install --system --no-cache \
     --extra-index-url https://download.pytorch.org/whl/cpu \
-    torch torchaudio \
+    torch torchaudio soxr \
     -r requirements.txt
 
-# triton は GPU カーネルコンパイル用で CPU 専用環境では不要かつ torch 2.3.1 と非互換
-# (triton 3.6.0 が入ると import torch が失敗するため削除)
-RUN pip uninstall -y triton 2>/dev/null || true
+# triton は GPU カーネル用で CPU 環境では不要 (入ると torch が壊れるため削除)
+RUN uv pip uninstall --system triton 2>/dev/null || true
 
 # モデルファイルの保存先ディレクトリを作成
 RUN mkdir -p /app/model_assets
