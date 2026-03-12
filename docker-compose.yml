@@ -6,6 +6,7 @@ services:
       - "5000:5000"
     volumes:
       - sbv2_model_assets:/app/model_assets
+      - sbv2_bert:/app/bert
 
   unspeech:
     image: ghcr.io/moeru-ai/unspeech:latest
@@ -19,3 +20,4 @@ services:
 
 volumes:
   sbv2_model_assets:
+  sbv2_bert:
