@@ -4,6 +4,8 @@ RUN pip install --no-cache-dir fastapi uvicorn httpx
 
 COPY sbv2_proxy.py /app/sbv2_proxy.py
 
+WORKDIR /app
+
 EXPOSE 5933
 
 CMD ["uvicorn", "sbv2_proxy:app", "--host", "0.0.0.0", "--port", "5933"]
