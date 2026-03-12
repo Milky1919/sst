@@ -14,14 +14,17 @@ WORKDIR /app
 RUN git clone https://github.com/litagin02/Style-Bert-VITS2 .
 
 # av==10.* の Cython ビルド問題を回避するため faster-whisper のバージョンを緩める
-# torch 行は削除して引数でバージョン固定する
+# torch のバージョン上限（<2.4）は transformers と競合するため削除
 RUN sed -i 's/faster-whisper==0\.10\.1/faster-whisper>=1.0.0/' requirements.txt \
     && sed -i '/^torch/d' requirements.txt
 
-# torch CPU版を明示しつつ全パッケージを1回で解決（分割するとビルドエラーになるため）
-RUN pip install --no-cache-dir \
+# pipの依存解決グラフが大きすぎてエラー (resolution-too-deep) になるため、Rust製の高速な 'uv' を導入
+RUN pip install --no-cache-dir uv
+
+# uv を使って超高速かつ確実に依存関係を解決して一括インストール (--system でコンテナのシステムPythonに直接入れる)
+RUN uv pip install --system --no-cache \
     --extra-index-url https://download.pytorch.org/whl/cpu \
-    "torch==2.3.1+cpu" "torchaudio==2.3.1+cpu" \
+    torch torchaudio \
     -r requirements.txt
 
 # triton は GPU カーネルコンパイル用で CPU 専用環境では不要かつ torch 2.3.1 と非互換
