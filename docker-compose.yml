@@ -1,0 +1,21 @@
+services:
+  style-bert-vits2:
+    image: ghcr.io/milky1919/style-bert-vits2:latest
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - sbv2_model_assets:/app/model_assets
+
+  unspeech:
+    image: ghcr.io/moeru-ai/unspeech:latest
+    restart: unless-stopped
+    ports:
+      - "5933:5933"
+    environment:
+      - SBV2_API_URL=http://style-bert-vits2:5000
+    depends_on:
+      - style-bert-vits2
+
+volumes:
+  sbv2_model_assets:
