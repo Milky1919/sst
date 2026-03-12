@@ -8,13 +8,12 @@ services:
       - sbv2_model_assets:/app/model_assets
       - sbv2_bert:/app/bert
 
-  unspeech:
-    image: ghcr.io/moeru-ai/unspeech:latest
+  sbv2-proxy:
+    image: ghcr.io/milky1919/sbv2-proxy:latest
     restart: unless-stopped
     ports:
       - "5933:5933"
     environment:
-      - BACKEND=sbv2
       - SBV2_API_URL=http://style-bert-vits2:5000
     depends_on:
       - style-bert-vits2
