@@ -19,6 +19,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=$(echo '${{ env.OWNER_LC }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -35,7 +38,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/style-bert-vits2:latest
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/style-bert-vits2:latest
           cache-from: type=gha,scope=sbv2
           cache-to: type=gha,mode=max,scope=sbv2
 
@@ -45,6 +48,6 @@ jobs:
           context: .
           file: Dockerfile.proxy
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/sbv2-proxy:latest
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/sbv2-proxy:latest
           cache-from: type=gha,scope=proxy
           cache-to: type=gha,mode=max,scope=proxy
