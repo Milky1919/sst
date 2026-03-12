@@ -24,12 +24,11 @@ RUN sed -i 's/faster-whisper==0\.10\.1/faster-whisper>=1.0.0/' requirements.txt 
 RUN pip install --no-cache-dir uv
 
 # uv を使って超高速かつ確実に依存関係を解決して一括インストール (--system でコンテナのシステムPythonに直接入れる)
-# torch/torchaudio>=2.6: CVE-2025-32434 対策で transformers が torch>=2.6 を要求
-# transformers<5: BERT API 破壊的変更の回避 (sed フォールバック含む)
-# soxr: transformers が 5.x に解決された場合の安全策
+# torch==2.3.1+cpu: 上流要件 (<2.4) 準拠の CPU 版
+# transformers==4.44.2: CVE-2025-32434 チェック (torch>=2.6 必須) 導入前の安定版
 RUN uv pip install --system --no-cache \
     --extra-index-url https://download.pytorch.org/whl/cpu \
-    "torch==2.6.0+cpu" "torchaudio==2.6.0+cpu" "transformers<5" soxr \
+    "torch==2.3.1+cpu" "torchaudio==2.3.1+cpu" "transformers==4.44.2" \
     -r requirements.txt
 
 # triton は GPU カーネル用で CPU 環境では不要 (入ると torch が壊れるため削除)
