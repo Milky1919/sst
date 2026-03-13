@@ -15,6 +15,7 @@ services:
       - "5933:5933"
     environment:
       - SBV2_API_URL=http://style-bert-vits2:5000
+      - WHISPER_API_URL=http://100.119.108.16:8787
     depends_on:
       - style-bert-vits2
 
