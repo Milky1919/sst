@@ -9,7 +9,9 @@ services:
       - sbv2_bert:/app/bert
 
   sbv2-proxy:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.proxy
     container_name: sbv2-proxy
     restart: unless-stopped
     ports:
