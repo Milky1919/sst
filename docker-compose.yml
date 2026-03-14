@@ -9,13 +9,15 @@ services:
       - sbv2_bert:/app/bert
 
   sbv2-proxy:
-    image: ghcr.io/milky1919/sbv2-proxy:latest
+    build: .
+    container_name: sbv2-proxy
     restart: unless-stopped
     ports:
       - "5933:5933"
     environment:
       - SBV2_API_URL=http://style-bert-vits2:5000
       - WHISPER_API_URL=http://100.119.108.16:8787
+      - SBV2_MODEL_NAME=jvnv-F1-jp
     depends_on:
       - style-bert-vits2
 
